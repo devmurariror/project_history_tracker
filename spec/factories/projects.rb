@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :project do
-    title { "MyString" }
-    description { "MyText" }
-    status { 1 }
-    user { nil }
+    title { "Sample Project" }
+    description { "This is a sample project" }
+    status { :in_progress }
+    association :user
   end
 end
