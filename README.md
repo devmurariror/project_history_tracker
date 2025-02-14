@@ -56,26 +56,8 @@ Let's get this project up and running on your local machine!
 3. **Install Dependencies:**
    ```bash
    bundle install
-4. **Configure the Database:** Create a `database.yml` file (if it doesn't exist) in the `config` directory. Update the `username` and `password` with your PostgreSQL credentials. A sample `database.yml` might look like this (adjust as needed):
+4. **Configure the Database:** Create a `database.yml` file (if it doesn't exist) in the `config` directory. Update the `username` and `password` with your PostgreSQL credentials.
 
-   ```yaml
-   development:
-     adapter: postgresql
-     encoding: utf8
-     database: project_history_tracker_development
-     pool: 5
-     username: your_username
-     password: your_password
-     host: localhost
-
-   test:
-     adapter: postgresql
-     encoding: utf8
-     database: project_history_tracker_test
-     pool: 5
-     username: your_username
-     password: your_password
-     host: localhost
 5. **Set up the Database:**
    ```bash
    rails db:setup
@@ -86,5 +68,12 @@ Let's get this project up and running on your local machine!
  **Track Model Changes with PaperTrail:**
    Track changes to your models, for auditing or versioning. See how a model looked at any stage in its lifecycle, revert it to any version, or restore it after it has been destroyed.
 
- *Some Screenshots:*
+ **Some Screenshots:**
       ![Tracking App](app/assets/images/image.png)
+
+ *Login Page:*
+      ![Tracking App](app/assets/images/login.png)
+
+ *Signup Page:*
+      ![Tracking App](app/assets/images/signup.png)
+
