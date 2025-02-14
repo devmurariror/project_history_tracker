@@ -7,6 +7,8 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @project = Project.includes(:comments, :user).find(params[:id])
+    @history = (@project.versions + @project.comments.flat_map(&:versions)).sort_by(&:created_at).reverse
   end
 
   def new
