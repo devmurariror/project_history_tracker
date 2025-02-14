@@ -1,0 +1,93 @@
+<div class="container mx-auto p-6">
+  <div class="mt-6 text-right">
+      <%= link_to 'Back to Project', root_path, class: "px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600" %>
+  </div>
+
+  <div class="text-center mb-6">
+    <h1 class="text-3xl font-bold mb-2"><%= @project.title %></h1>
+    <p class="text-lg text-gray-700">Status: <%= @project.status.capitalize %></p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
+      <h2 class="text-2xl font-semibold mb-4 text-center">Change Status</h2>
+      <%= form_with model: @project, local: true do |f| %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="mb-4">
+            <%= f.label :status, class: "block text-sm font-medium text-gray-700" %>
+            <%= f.select :status, Project.statuses.keys.map { |status| [status.humanize, status] }, selected: @project.status, class: "mt-1 p-2 border border-gray-300 rounded-md shadow-sm w-full" %>
+          </div>
+
+          <div class="mb-4 text-center md:text-right flex items-center justify-center md:justify-end">
+            <%= f.submit 'Update Status', class: "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4">Comments</h2>
+      <%= form_with model: [@project, Comment.new], local: true do |f| %>
+        <div class="mb-4">
+          <%= f.label :text, class: "block text-sm font-medium text-gray-700" %>
+          <%= f.text_area :text, class: "mt-1 p-2 border border-gray-300 rounded-md shadow-sm w-full" %>
+        </div>
+        <%= f.submit 'Add Comment', class: "px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" %>
+      <% end %>
+
+      <ul class="mt-6 space-y-4">
+        <% @project.comments.each do |comment| %>
+          <li class="flex space-x-2">
+            <strong class="text-gray-800"><%= comment.user.email %>:</strong>
+            <span class="text-gray-600"><%= comment.text %></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold mb-3">History</h2>
+    <table class="min-w-full table-auto border-collapse border border-gray-300">
+      <thead>
+        <tr class="bg-gray-100 border-b">
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Event</th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Details</th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Date/Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @history.each do |version| %>
+          <tr class="border-b">
+            <td class="px-4 py-2 text-sm text-gray-800"><%= version.event.capitalize %></td>
+            <td class="px-4 py-2 text-sm text-gray-600">
+              <% if version.item_type == "Project" %>
+                <% if version.event == "update" %>
+                  <% if version.respond_to?(:object_changes) %>
+                    <% changes = version.object_changes %>
+                    <% if changes.present? && changes['status'] %>
+                      Status Changed: <%= changes['status'].last.humanize %>
+                    <% elsif changes.present? && changes['title'] %>
+                      Project updated: Title
+                    <% elsif changes.present? && changes['description'] %>
+                      Project updated: Description
+                    <% else %>
+                      Project Updated
+                    <% end %>
+                  <% else %>
+                    Project Updated (No object_changes available)
+                  <% end %>
+                <% else %>
+                  Status change
+                <% end %>
+              <% elsif version.item_type == "Comment" %>
+                Comment by <%= user_email_from_version(version) || "Unknown User" %>: <%= version.item.text %>
+              <% end %>
+            </td>
+            <td class="px-4 py-2 text-sm text-gray-600"><%= version.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
